@@ -113,7 +113,7 @@ export class SvgShape {
     const [base = '', state] = this.id.split(this.config.id.pseudo);
     this.base = base;
     this.state = state || null;
-    this.#precision = 10 ** Number(this.config.dimension.precision);
+    this.#precision = 10 ** this.config.dimension.precision;
 
     // Determine meta & alignment data
     const relative = path.basename(file.relative, '.svg');
@@ -652,11 +652,11 @@ export class SvgShape {
 
     return selectors
       ? this.#replaceIdAndClassnameReferencesInCssSelectors(
-          result,
-          cssom.parse(result).cssRules,
-          substIds,
-          substClassnames
-        )
+        result,
+        cssom.parse(result).cssRules,
+        substIds,
+        substClassnames
+      )
       : result;
   }
 
@@ -727,7 +727,7 @@ export class SvgShape {
       };
 
       // If there are multiple subselectors, substitute all of them
-      for (const selector of sel.selectors ?? []) {
+      for (const selector of sel?.selectors ?? []) {
         collect(selector);
       }
 
@@ -738,12 +738,12 @@ export class SvgShape {
       }
 
       // Substitute IDs within the selector
-      for (const id of ids.sort((a, b) => b.length - a.length)) {
+      for (const id of ids.toSorted((a, b) => b.length - a.length)) {
         selText = selText.split(`#${id}`).join(`#${substIds?.[`#${id}`] ?? id}`);
       }
 
       // Substitute class names within the selector
-      for (const classname of [...classnames].sort((a, b) => b.length - a.length)) {
+      for (const classname of [...classnames].toSorted((a, b) => b.length - a.length)) {
         selText = selText
           .split(`.${classname}`)
           .join(`.${substClassnames?.[`.${classname}`] ?? classname}`);

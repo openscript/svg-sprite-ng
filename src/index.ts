@@ -192,7 +192,7 @@ export class SvgSpriter implements SpriterContext {
     this.shapes.sort(this.config.shape.sort);
 
     // Set the shape namespaces on all master shapes
-    for (const [index, shape] of this.shapes.filter((shape) => !shape.master).entries()) {
+    for (const [index, shape] of this.shapes.filter((candidate) => !candidate.master).entries()) {
       await shape.setNamespace(this.#indexNamespace(index));
     }
 
@@ -289,7 +289,7 @@ export class SvgSpriter implements SpriterContext {
       [...extensions].map(([extension, count]) => `${count} x ${extension.slice(1)}`).join(', ')
     );
 
-    for (const [file, size] of [...sizes].sort(([a], [b]) => (a > b ? 1 : -1))) {
+    for (const [file, size] of [...sizes].toSorted(([a], [b]) => (a > b ? 1 : -1))) {
       this.verbose('Created %s: %s', file, size);
     }
   }

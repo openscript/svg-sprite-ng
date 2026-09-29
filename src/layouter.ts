@@ -172,7 +172,7 @@ export class SvgSpriteLayouter {
         return new SvgSpriteSymbol(this.#spriter, config, data, key);
       }
 
-      case 'stack': {
+      default: {
         return new SvgSpriteStack(this.#spriter, config, data, key);
       }
     }

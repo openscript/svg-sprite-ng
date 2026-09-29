@@ -18,10 +18,20 @@
     "unicorn/no-array-reduce": "off",
     "unicorn/no-negated-condition": "off",
     "unicorn/prefer-code-point": "off",
+    "typescript/no-unsafe-type-assertion": "off",
+    "no-underscore-dangle": ["warn", { "allow": ["__starts", "__ends", "_nsMap"] }],
     "typescript/no-explicit-any": "error",
     "typescript/no-floating-promises": "error",
     "typescript/no-misused-promises": "error",
     "typescript/await-thenable": "error"
   },
+  "overrides": [
+    {
+      "files": ["test/**"],
+      "rules": {
+        "no-new": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["dist", "coverage", "tmp", "test/fixture", "test/expected"]
 }

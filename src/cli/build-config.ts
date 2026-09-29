@@ -26,14 +26,14 @@ function addConfigMap(store: Store, keys: readonly string[], value: unknown): vo
   }
 
   if (rest.length > 0) {
-    let child = store[key];
+    let nested = store[key];
 
-    if (!isPlainObject(child)) {
-      child = {};
-      store[key] = child;
+    if (!isPlainObject(nested)) {
+      nested = {};
+      store[key] = nested;
     }
 
-    addConfigMap(child as Store, rest, value);
+    addConfigMap(nested as Store, rest, value);
   } else {
     store[key] = value;
   }

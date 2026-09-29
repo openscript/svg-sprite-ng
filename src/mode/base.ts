@@ -132,7 +132,7 @@ export abstract class SvgSpriteBase {
       // Prepare the CSS prefix
       prefix: /%s/.test(prefix.split('%%').join('')) ? prefix : `${prefix}%s`,
       dimensions: config.dimensions,
-      bust: Boolean(config.bust),
+      bust: config.bust,
       svg: config.svg,
       layout: config.layout ?? 'packed',
       common: config.common ?? null,
@@ -279,7 +279,7 @@ export abstract class SvgSpriteBase {
       return local || '';
     }
 
-    return String(global || '').trim();
+    return (global || '').trim();
   }
 
   /** Add cache busting and return the sprite path */

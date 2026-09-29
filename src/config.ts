@@ -238,7 +238,7 @@ function resolveShape(config: SpriterConfig, dest: string, log: Logger): Resolve
           : '%s'
       );
 
-  const shapeDest = shape.dest === undefined ? '' : String(shape.dest).trim();
+  const shapeDest = shape.dest === undefined ? '' : shape.dest.trim();
 
   return {
     id: {

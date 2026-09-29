@@ -70,7 +70,7 @@ export class SvgSpriteCss extends SvgSpriteBase {
 
     this.displaceable = ['vertical', 'horizontal'].includes(this.config.layout);
     this.#precision =
-      Number(this.config.svg.precision) >= 0 ? 10 ** Number(this.config.svg.precision) : null;
+      this.config.svg.precision >= 0 ? 10 ** this.config.svg.precision : null;
   }
 
   /** Attributes to add to a shape's root element (overridden by the view mode) */

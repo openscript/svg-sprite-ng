@@ -200,7 +200,7 @@ function resolveShapeTransforms(shape: ShapeConfig): ResolvedTransform[] {
       }
 
       if (isObject(value) || isFunction(value)) {
-        result.push([transformer, value as ResolvedTransform[1]]);
+        result.push([transformer, value]);
         break;
       }
     }
@@ -215,7 +215,7 @@ function resolveSvgTransforms(transform: SvgConfig['transform']): SvgTransformer
   }
 
   if (isFunction(transform)) {
-    return [transform as SvgTransformer];
+    return [transform];
   }
 
   if (Array.isArray(transform)) {
@@ -231,7 +231,7 @@ function resolveShape(config: SpriterConfig, dest: string, log: Logger): Resolve
   const separator = shape.id?.separator ?? '--';
   const generatorOption = shape.id?.generator;
   const generator: ShapeIdGenerator = isFunction(generatorOption)
-    ? (generatorOption as ShapeIdGenerator)
+    ? (generatorOption)
     : createIdGenerator(
         isString(generatorOption)
           ? generatorOption + (generatorOption.includes('%s') ? '' : '%s')
@@ -300,7 +300,7 @@ export function resolveModes(modes: ModeMap = {}): Record<string, ResolvedModeCo
     let modeConfig: ModeConfig | null = null;
 
     if (isPlainObject(value)) {
-      modeConfig = value as ModeConfig;
+      modeConfig = value;
     } else if (value === true) {
       modeConfig = {};
     }
@@ -308,7 +308,7 @@ export function resolveModes(modes: ModeMap = {}): Record<string, ResolvedModeCo
     const type = modeConfig?.mode ?? key;
 
     if (modeConfig && SPRITE_TYPES.has(type)) {
-      filtered[key] = { ...modeConfig, mode: type as SpriteType } as ResolvedModeConfig;
+      filtered[key] = { ...modeConfig, mode: type as SpriteType };
     }
   }
 

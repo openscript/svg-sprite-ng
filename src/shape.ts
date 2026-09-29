@@ -704,7 +704,7 @@ export class SvgShape {
       const origSelText = selText;
       let sel: ParsedSelector | undefined = new CssSelectorParser().parse(
         selText
-      ) as ParsedSelector;
+      );
       const ids: string[] = [];
       const classnames = new Set<string>();
 

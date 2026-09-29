@@ -67,7 +67,7 @@ function flatten(name: string, node: OptionSchema, options: CliOption[]): void {
 
   for (const [key, value] of Object.entries(node)) {
     if (!OPTION_KEYS.has(key) && isPlainObject(value)) {
-      flatten(`${name}-${key}`, value as OptionSchema, options);
+      flatten(`${name}-${key}`, value, options);
     }
   }
 }
@@ -83,7 +83,7 @@ export async function loadOptions(): Promise<CliOption[]> {
 
   for (const [key, value] of Object.entries(schema)) {
     if (isPlainObject(value)) {
-      flatten(key, value as OptionSchema, options);
+      flatten(key, value, options);
     }
   }
 

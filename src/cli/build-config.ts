@@ -42,7 +42,7 @@ function addConfigMap(store: Store, keys: readonly string[], value: unknown): vo
 function child(store: Store, key: string): Store {
   const value = store[key];
 
-  return isPlainObject(value) ? (value as Store) : {};
+  return isPlainObject(value) ? (value) : {};
 }
 
 async function readJson(file: string): Promise<unknown> {
@@ -225,5 +225,5 @@ export async function buildConfig(
     }
   }
 
-  return config as SpriterConfig;
+  return config;
 }

@@ -52,13 +52,13 @@ For an up-to-date list of browsers supporting [SVG in general](https://caniuse.c
 To install *svg-sprite* locally, run:
 
 ```bash
-npm install svg-sprite
+npm install @openscript/svg-sprite-ng
 ```
 
 To install the CLI globally, run:
 
 ```bash
-npm install svg-sprite -g
+npm install @openscript/svg-sprite-ng -g
 ```
 
 
@@ -114,7 +114,7 @@ const { result } = await spriter.compile();
 await writeFiles(result);
 ```
 
-As you can see, big parts of the above are dealing with disk I/O. For projects using Vite or Webpack, you can generate sprites as part of the build with the [CLI integration guide](docs/build-integrations.md). If you want a runnable end-to-end example, have a look at [`example.ts`](example.ts) or run `npm run example`.
+As you can see, big parts of the above are dealing with disk I/O. For projects using Vite or Webpack, you can generate sprites as part of the build with the [CLI integration guide](docs/build-integrations.md). If you want a runnable end-to-end example, have a look at [`example.ts`](example.ts) or run `pnpm example`.
 
 
 ## Configuration basics

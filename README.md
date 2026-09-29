@@ -14,9 +14,9 @@ It comes with a set of [Mustache](https://mustache.github.io/) templates for cre
 
 For an up-to-date list of browsers supporting [SVG in general](https://caniuse.com/svg) respectively [SVG fragment identifiers](https://caniuse.com/svg-fragment) in particular (required for `<defs>` and `<symbol>` sprites as well as SVG stacks) please refer to [caniuse.com](https://caniuse.com/).
 
-## Grunt, Gulp & Co.
+## Build system integrations
 
-Being a low-level library with support for [Node.js streams](https://github.com/substack/stream-handbook), *svg-sprite* doesn't take on the part of accessing the file system (i.e. reading the source SVGs from and writing the sprites and CSS files to disk). If you don't want to take care of this stuff yourself, you might rather have a look at the available wrappers for **Grunt** ([grunt-svg-sprite](https://github.com/svg-sprite/grunt-svg-sprite)) and **Gulp** ([gulp-svg-sprite](https://github.com/svg-sprite/gulp-svg-sprite)). *svg-sprite* is also the foundation of the **[iconizr](https://github.com/jkphl/node-iconizr)** project, which serves high-quality SVG based **CSS icon kits with PNG fallbacks**.
+*svg-sprite* can run as a CLI step in modern build systems such as Vite and Webpack. The [integration guide](docs/build-integrations.md) shows how to generate sprites before development and production builds. For custom workflows, use the [standard API](docs/api.md).
 
 
 ## Table of contents
@@ -25,7 +25,7 @@ Being a low-level library with support for [Node.js streams](https://github.com/
 * [Getting started](#getting-started)
   * [Usage pattern](#usage-pattern)
   * [Standard API](docs/api.md)
-  * [Grunt & Gulp wrappers](docs/grunt-gulp.md)
+  * [Build system integrations](docs/build-integrations.md)
 * [Configuration basics](#configuration-basics)
   * [General configuration options](#general-configuration-options)
   * [Output modes](#output-modes)
@@ -114,7 +114,7 @@ const { result } = await spriter.compile();
 await writeFiles(result);
 ```
 
-As you can see, big parts of the above are dealing with disk I/O. In this regard, you can make your life easier by [using the Grunt or Gulp wrappers](docs/grunt-gulp.md) instead of the [standard API](docs/api.md). If you want a runnable end-to-end example, have a look at [`example.ts`](example.ts) or run `npm run example`.
+As you can see, big parts of the above are dealing with disk I/O. For projects using Vite or Webpack, you can generate sprites as part of the build with the [CLI integration guide](docs/build-integrations.md). If you want a runnable end-to-end example, have a look at [`example.ts`](example.ts) or run `npm run example`.
 
 
 ## Configuration basics
@@ -353,7 +353,7 @@ The complete configuration documentation including all options [can be found her
 
 ### Online configurator & project kickstarter
 
-To get you quickly off the ground, I made a simple [online configurator](https://svg-sprite.github.io/svg-sprite/) that lets you create a custom *svg-sprite* configuration in seconds. You may download the results as plain JSON, Node.js project, Gruntfile, or Gulpfile. Please visit the configurator at <https://svg-sprite.github.io/svg-sprite/>.
+To get you quickly off the ground, I made a simple [online configurator](https://svg-sprite.github.io/svg-sprite/) that lets you create a custom *svg-sprite* configuration in seconds. You may download the results as plain JSON or a Node.js project. Please visit the configurator at <https://svg-sprite.github.io/svg-sprite/>.
 
 
 ## Advanced techniques

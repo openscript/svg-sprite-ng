@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "useTabs": false,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "singleQuote": true,
+  "semi": true,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "ignorePatterns": [
+    "dist",
+    "coverage",
+    "tmp",
+    "test/fixture",
+    "test/expected",
+    "test/tmpl",
+    "tmpl",
+    "docs",
+    "*.md",
+    "package-lock.json"
+  ]
+}

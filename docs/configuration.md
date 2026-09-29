@@ -10,7 +10,7 @@ The *svg-sprite* **main configuration** is provided to the [constructor](api.md#
 ```js
 {
   dest: <String>, // Main output directory
-  log: <String|Logger>, // Logging verbosity or custom logger
+  log: <Boolean|String|Logger>, // Logging verbosity or custom logger
   shape: <Object>, // SVG shape configuration
   svg: <Object>, // Sprite SVG options
   variables: <Object>, // Custom templating variables
@@ -33,7 +33,7 @@ All of these properties are optional so in fact, even an empty object `{}` is a 
     * [Pre-defined shape transformations](#pre-defined-shape-transformations-string-values)
     * [Custom shape transformations](#custom-shape-transformations-object-values)
       * [Pre-defined shape transformation with custom configuration](#pre-defined-shape-transformation-with-custom-configuration-object-values)
-      * [Custom callback transformation](#custom-callback-transformation-function-values)
+      * [Custom shape transformation](#custom-shape-transformation-function-values)
   * [Miscellaneous shape options](#miscellaneous-shape-options)
 * [Sprite SVG options](#sprite-svg-options)
   * [SVG sprite customization](#svg-sprite-customization)
@@ -59,7 +59,7 @@ Property         | Type      | Default     | Description                |
 
 Property         | Type      | Default     | Description                |
 ------------------------ | --------------- | ------------- | ------------------------------------------ |
-`log`          | String\|Logger  |         | *svg-sprite* uses [winston](https://github.com/winstonjs/winston) for logging, but output is turned off by default. To activate and use the pre-configured console logger, you need to pass the desired log level (`'info'`, `'verbose'` or `'debug'`). Alternatively, you can pass your own custom `winston.Logger` instance (which needs to handle at least these three log levels). Falsy values like `""`, `false` or `null` will disable logging. |
+`log`          | Boolean\|String\|Logger  | `false` | *svg-sprite* ships with a small built-in console logger implementing the minimal `Logger` interface (`info`, `verbose`, `debug`, `error`). Pass `true` or `'info'` for info logging, `'verbose'` or `'debug'` for more output, or `false` to silence it. You may also pass any custom logger object implementing that interface; existing winston logger instances still work. |
 
 
 ### SVG shape configuration
@@ -98,7 +98,7 @@ shape: {
 Property         | Type      | Default     | Description                |
 -------------------------| --------------- | ------------- | ------------------------------------------ |
 `shape.id.separator`   | String       | `"--"`     | Separator for traversing a directory structure into a shape ID. If empty, no directory traversal will happen and only the file name part (without the parent directory names) will be considered for the shape ID. |
-`shape.id.generator`   | Function\|String | See desc.  | Callback for translating the local part of a shape's file name into a shape ID. The callback's signature is `function(name, file) { /* ... */ return id; }`, where `name` is the relative path of the source file within the base directory and `file` the original [vinyl](https://github.com/gulpjs/vinyl) file object. By default, the file extension `".svg"` is stripped off the `name` value and directory structures are traversed using the `id.separator` as replacement for the directory separator. You may also provide a template string (e.g. `"icon-%s"`), in which case the placeholder `"%s"` gets substituted with the traversed local file name. If the string doesn't contain any placeholder, it is used as a prefix to the local file name. |
+`shape.id.generator`   | Function\|String | See desc.  | Callback for translating the local part of a shape's file name into a shape ID. The callback's signature is `function(name, file) { /* ... */ return id; }`, where `name` is the relative path of the source file within the base directory and `file` is the current `SpriteFile` / file-like object. By default, the file extension `".svg"` is stripped off the `name` value and directory structures are traversed using the `id.separator` as replacement for the directory separator. You may also provide a template string (e.g. `"icon-%s"`), in which case the placeholder `"%s"` gets substituted with the traversed local file name. If the string doesn't contain any placeholder, it is used as a prefix to the local file name. |
 `shape.id.pseudo`    | String       | `"~"`    | String separator for pseudo CSS classes in file names. Example: `my-icon.svg` and `my-icon~hover.svg` for an icon with a regular and a `:hover` state. |
 `shape.id.whitespace`  | String       | `"_"`    | Replacement string for whitespace characters in file names during shape ID generation. Example: By default, `My Custom Icon.svg` will result in the shape ID `my_custom_icon`. |
 
@@ -122,7 +122,7 @@ Property         | Type      | Default     | Description                |
 
 #### Shape transformations
 
-The `shape.transform` array holds a list of transformations that are applied — in order — to each of the SVG shapes before they get combined into the sprite. The list defaults to `['svgo']`. The items of the `shape.transform` list might be of type `String` or `Object`.
+The `shape.transform` array holds a list of transformations that are applied — in order — to each SVG shape before it gets combined into the sprite. The list defaults to `['svgo']`. Entries may be strings (`'svgo'`), custom functions, or objects mapping transformation names to options.
 
 
 ##### Pre-defined shape transformations (`String` values)
@@ -189,28 +189,19 @@ To call a pre-defined transformation with custom configuration options, use its 
 }
 ```
 
-###### Custom callback transformation (`Function` values)
+The built-in default SVGO configuration explicitly pins the plugin list that `svg-sprite` 3.x used by default, even though SVGO 4 changed `preset-default`. This keeps the out-of-the-box optimization behavior close to 3.x. If you provide your own `plugins` list (for example by using `preset-default` directly), you get **SVGO 4 semantics** instead: plugins such as `removeViewBox` and `removeTitle` are no longer part of `preset-default`, overrides for plugins that are not in the preset are treated as errors, and some serialized path / transform output may differ slightly.
 
-To use a custom callback for transforming a shape's SVG, pass a function with the following signature:
+###### Custom shape transformation (`Function` values)
+
+To use a custom function for transforming a shape's SVG, pass a function with the following signature:
 
 ```js
-// SVGO transformation with custom plugin configuration
 {
   shape: {
     transform: [
-      {custom:
-
-        /**
-         * Custom callback transformation
-         *
-         * @param {SVGShape} shape SVG shape object
-         * @param {SVGSpriter} spriter SVG spriter
-         * @param {Function} callback Callback
-         * @return {void}
-         */
-        (shape, sprite, callback) => {
+      {
+        custom: async (shape, spriter) => {
           /* ... */
-          callback(null);
         }
       }
     ]
@@ -219,7 +210,21 @@ To use a custom callback for transforming a shape's SVG, pass a function with th
 }
 ```
 
-The transformation name (`"custom"` in this case) is of no significance. Please see `lib/svg-sprite/shape.js` to learn about what you can do with the shape object.
+A direct function entry is equivalent:
+
+```js
+{
+  shape: {
+    transform: [
+      async (shape, spriter) => {
+        /* ... */
+      }
+    ]
+  }
+}
+```
+
+The transformer receives the `shape` and the current spriter instance and may return either `void` or a `Promise<void>`. There is no callback argument. The transformation name (`"custom"` in the first example) is otherwise insignificant.
 
 
 #### Miscellaneous shape options
@@ -229,7 +234,7 @@ Property         | Type      | Default     | Description                |
 `shape.sort`       | Function    |         | Callback for sorting the list of shapes. The callback's signature is `function(shape1, shape2) { /* ... */ return order; }`. It gets passed two shape objects and is expected to return an integer with `0` meaning both shapes are equal in their position, `1` meaning the first shape should follow the second one, and `-1` the other way round. The default callback simply compares the shapes' `id` values and returns them in alphabetical order, but you may as well implement your own ordering logic. |
 `shape.meta`       | String      |         | Path to a [YAML](https://yaml.org/) file with [meta data to be injected](meta-data.md) into the SVG shapes. |
 `shape.align`      | String      |         | Path to a [YAML](https://yaml.org/) file with [extended alignment settings](shape-alignment.md) for sprites with `"vertical"` or `"horizontal"` layout. |
-`shape.dest`       | String      |         | Implicit way of calling [`.getShapes()`](api.md#svgspritergetshapes-dest--callback-) during sprite compilation. If given, the `result` of subsequent [`.compile()`](api.md#svgspritercompile-config--callback-) calls will carry an additional `shapes` property, listing the intermediate SVG files as an Array of [vinyl](https://github.com/gulpjs/vinyl) files. The value will be used as the destination directory for the files (relative to the main output directory if not absolute anyway). |
+`shape.dest`       | String      |         | Implicit way of calling [`.getShapes()`](api.md#svgspritergetshapesdest) during sprite compilation. If given, the `result` of subsequent [`.compile()`](api.md#svgspritercompile-config-) calls will carry an additional `shapes` property, listing the intermediate SVG files as an array of `SpriteFile` objects. The value will be used as the destination directory for the files (relative to the main output directory if not absolute anyway). |
 
 
 ### Sprite SVG options
@@ -240,18 +245,18 @@ Property         | Type      | Default     | Description                |
 ------------------------ | --------------- | ------------- | ------------------------------------------ |
 `svg.xmlDeclaration`     | Boolean\|String | `true`  | Output an XML declaration at the very beginning of each compiled sprite. If you provide a non-empty string here, it will be used one-to-one as declaration (e.g. `<?xml version="1.0" encoding="utf-8"?>`). If you set this to `true`, *svg-sprite* will look at the registered shapes for an XML declaration and use the first one it can find. |
 `svg.doctypeDeclaration`   | Boolean\|String | `true`  | Include a `<DOCTYPE>` declaration in each compiled sprite. If you provide a non-empty string here, it will be used one-to-one as declaration (e.g. `<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">`). If you set this to `true`, *svg-sprite* will look at the registered shapes for a DOCTYPE declaration and use the first one it can find. |
-`svg.namespaceIDs`       | Boolean     | `true`  | In order to avoid ID clashes, the default behavior is to namespace all IDs in the source SVGs before compiling them into a sprite. Each ID is prepended with a unique string. In some situations, it might be desirable to disable ID namespacing, e.g. when you want to script the resulting sprite. Just set `svg.namespaceIDs` to `false` then and be aware that you might also want to disable SVGO's ID minification (`shape.transform.svgo.plugins.params.overrides: {cleanupIDs: false}`). |
+`svg.namespaceIDs`       | Boolean     | `true`  | In order to avoid ID clashes, the default behavior is to namespace all IDs in the source SVGs before compiling them into a sprite. Each ID is prepended with a unique alphabetical prefix; those prefixes are assigned after applying `shape.sort`, so changing the sort order changes the prefix letters as well. In some situations, it might be desirable to disable ID namespacing, e.g. when you want to script the resulting sprite. Just set `svg.namespaceIDs` to `false` then and be aware that you might also want to disable SVGO's ID minification in your own SVGO plugin configuration. |
 `svg.namespaceIDPrefix`    | String      |       | Under some circumstances, the automatically generated ID namespaces might interfere with external scripts (e.g. see [this issue](namespaceIDPrefix) for a problem detected with Google Analytics). In these situations it might be helpful to prefix all IDs with a custom prefix set with this option. |
 `svg.namespaceClassnames`  | Boolean     | `true`  | In order to avoid CSS class name ambiguities, the default behavior is to namespace CSS class names in the source SVGs before compiling them into a sprite. Each class name is prepended with a unique string. Disable this option to keep the class names untouched. |
 `svg.dimensionAttributes`  | Boolean     | `true`  | If truthy, `width` and `height` attributes will be set on the sprite's `<svg>` element (where applicable). |
 `svg.rootAttributes`     | Object      |       | Shorthand for applying custom attributes to the outermost `<svg>` element. Please be aware that certain attributes (e.g. `viewBox`) will be calculated dynamically and override custom `rootAttributes` in any case. |
 `svg.precision`        | Integer     |       | Floating point precision for CSS positioning values (defaults to `-1` meaning highest possible precision). |
-`svg.transform`        | Function\|Array |       | Callback (or list of callbacks) that will be applied to the resulting SVG sprites as global [post-processing transformation](#svg-sprite-customization). |
+`svg.transform`        | Function\|Array |       | Function (or list of functions) that will be applied to the resulting SVG sprites as global [post-processing transformation](#svg-sprite-customization). |
 
 
 #### SVG sprite customization
 
-The `svg.transform` option can be used to post-process and customize the SVG sprites. You may specify a callback (or a list of callbacks) with the following signature:
+The `svg.transform` option can be used to post-process and customize the SVG sprites. You may specify a function (or a list of functions) with the following signature:
 
 ```js
 // Custom global post-processing transformation
@@ -275,7 +280,7 @@ The `svg.transform` option can be used to post-process and customize the SVG spr
 }
 ```
 
-The callbacks are processed synchronously and in the given order. Each one is passed to the sprite's SVG source as its first (and only) argument and is expected to return the modified SVG source after transformation. It's completely up to what you do with the SVG source, just don't forget to return it in the end. You may e.g. run some regex or even full-blown DOM operations on the SVG contents (*svg-sprite* depends on [xmldom](https://github.com/xmldom/xmldom), so you may require a parser instance `const DOMParser = require('@xmldom/xmldom').DOMParser; /* ... */` within your callback ...).
+The functions are processed synchronously and in the given order. Each one is passed the sprite's SVG source as its first (and only) argument and is expected to return the modified SVG source after transformation. It's completely up to what you do with the SVG source, just don't forget to return it in the end. You may e.g. run some regex or even full-blown DOM operations on the SVG contents (*svg-sprite* depends on [xmldom](https://github.com/xmldom/xmldom), so you may import a parser instance such as `import { DOMParser } from '@xmldom/xmldom'; /* ... */` within your transformer ...).
 
 
 ### Custom templating variables

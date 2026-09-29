@@ -5,7 +5,7 @@ This file is part of the documentation of *svg-sprite* — a free low-level Node
 
 ## Command line usage
 
-You may use *svg-sprite* as a command line tool. Type `svg-sprite --help` to get all the available options:
+You may use *svg-sprite* as a command line tool. The binary name is still `svg-sprite`, the option set is unchanged, and the CLI now runs on yargs 18 plus [tinyglobby](https://github.com/SuperchupuDev/tinyglobby). Type `svg-sprite --help` to get all the available options:
 
 ```text
 Usage: svg-sprite [options] files
@@ -199,7 +199,7 @@ svg-sprite --config config.json assets/*.svg
 
 ### Advanced globbing
 
-Some shells don't support the double-star character `**` for matching files in an arbitrary directory depth, so you should wrap your glob expression in single quotes when using it in your pattern. This will prevent your shell from trying to resolve it and rather delegate globbing to Node instead (which does support the `**` character).
+Some shells don't support the double-star character `**` for matching files in an arbitrary directory depth, so you should wrap your glob expression in single quotes when using it in your pattern. This will prevent your shell from trying to resolve it and instead delegate globbing to `tinyglobby` (which does support the `**` character).
 
 ```bash
 svg-sprite --config config.json 'assets/**/*.svg'

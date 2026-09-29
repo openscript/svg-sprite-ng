@@ -1,3 +1,15 @@
+## 4.0.0
+
+* Rewrite the package as ESM-only TypeScript and require Node.js >= 22.12
+* Change the public API to async-only promises: `compile()` now returns `{ result, data }`, `compileAsync()` and callback-style APIs are gone, and `getShapes()` is promise-based
+* Export `SvgSpriter` as a named export together with bundled TypeScript types such as `SpriterConfig`, `ModeMap`, `SpriteResult`, `SpriteFile`, and `Logger`
+* Drop hard dependencies on `vinyl` and `winston`; `.add()` accepts any `{ path, base, contents }` object, result files are `SpriteFile` instances, and the `log` option accepts booleans, log levels, or any compatible logger object
+* Update custom shape transformers to `(shape, spriter) => void | Promise<void>` and keep `svg.transform` as synchronous string-to-string post-processing
+* Upgrade to SVGO 4 while pinning the previous default plugin list for the built-in `svgo` transform; user-supplied `preset-default` configs now follow SVGO 4 behavior
+* Keep the CLI name and option set, but reimplement it with yargs 18 and tinyglobby
+* `npm run example` now executes `example.ts`
+* Expect some output differences compared to 3.x, including transform serialization details and namespace ID prefixes being assigned in sorted-shape order
+
 Newer release notes are published on the GitHub release page: <https://github.com/svg-sprite/svg-sprite/releases>
 
 ---

@@ -47,7 +47,15 @@ Being a low-level library with support for [Node.js streams](https://github.com/
 
 ## Installation
 
-To install *svg-sprite* globally, run:
+*svg-sprite* 4.x is **ESM-only**, requires **Node.js >= 22.12**, and ships TypeScript types. Use the named export `SvgSpriter` when importing it from code.
+
+To install *svg-sprite* locally, run:
+
+```bash
+npm install svg-sprite
+```
+
+To install the CLI globally, run:
 
 ```bash
 npm install svg-sprite -g
@@ -58,9 +66,9 @@ npm install svg-sprite -g
 
 Crafting a sprite with *svg-sprite* typically follows these steps:
 
-1. You [create an instance of the SVGSpriter](docs/api.md#svgspriter-config-), passing a main configuration object to the constructor.
+1. You [create an instance of `SvgSpriter`](docs/api.md#svgspriter-config-), passing a main configuration object to the constructor.
 2. You [register a couple of SVG source files](docs/api.md#svgspriteraddfile--name-svg-) for processing.
-3. You [trigger the compilation process](docs/api.md#svgspritercompile-config--callback-) and receive the generated files (sprite, CSS, example documents etc.).
+3. You [`await spriter.compile([config])`](docs/api.md#svgspritercompile-config-) and receive the generated files (sprite, CSS, example documents etc.).
 
 The procedure is the very same for all supported sprite types («modes»).
 
@@ -68,42 +76,45 @@ The procedure is the very same for all supported sprite types («modes»).
 ### Usage pattern
 
 ```js
-const fs = require('fs');
-const path = require('path');
-const SVGSpriter = require('svg-sprite');
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { SvgSpriter } from 'svg-sprite';
 
-// Create spriter instance (see below for `config` examples)
-const spriter = new SVGSpriter(config);
-
-// Add SVG source files — the manual way ...
-spriter.add('assets/svg-1.svg', null, fs.readFileSync('assets/svg-1.svg', 'utf-8'));
-spriter.add('assets/svg-2.svg', null, fs.readFileSync('assets/svg-2.svg', 'utf-8'));
-/* ... */
-
-// Compile the sprite
-spriter.compile((error, result) => {
-  /* Write `result` files to disk (or do whatever with them ...) */
-  for (const mode of Object.values(result)) {
-    for (const resource of Object.values(mode)) {
-      fs.mkdirSync(path.dirname(resource.path), { recursive: true });
-      fs.writeFileSync(resource.path, resource.contents);
-    }
+async function writeFiles(files) {
+  if (!files) {
+    return;
   }
-});
 
-// Or compile the sprite async
-const { result } = await spriter.compileAsync();
-/* Write `result` files to disk (or do whatever with them ...) */
-for (const mode of Object.values(result)) {
-  for (const resource of Object.values(mode)) {
-    fs.mkdirSync(path.dirname(resource.path), { recursive: true });
-    fs.writeFileSync(resource.path, resource.contents);
+  for (const file of Object.values(files)) {
+    if (!file) {
+      continue;
+    }
+
+    if (Array.isArray(file)) {
+      await writeFiles(file);
+    } else if (typeof file === 'object' && 'path' in file && 'contents' in file) {
+      await fs.mkdir(path.dirname(file.path), { recursive: true });
+      await fs.writeFile(file.path, file.contents);
+    } else if (typeof file === 'object') {
+      await writeFiles(file);
+    }
   }
 }
 
+// Create spriter instance (see below for `config` examples)
+const spriter = new SvgSpriter(config);
+
+// Add SVG source files — the manual way ...
+spriter.add('assets/svg-1.svg', null, await fs.readFile('assets/svg-1.svg', 'utf8'));
+spriter.add('assets/svg-2.svg', null, await fs.readFile('assets/svg-2.svg', 'utf8'));
+/* ... */
+
+// Compile the sprite
+const { result } = await spriter.compile();
+await writeFiles(result);
 ```
 
-As you can see, big parts of the above are dealing with disk I/O. In this regard, you can make your life easier by [using the Grunt or Gulp wrappers](docs/grunt-gulp.md) instead of the [standard API](docs/api.md).
+As you can see, big parts of the above are dealing with disk I/O. In this regard, you can make your life easier by [using the Grunt or Gulp wrappers](docs/grunt-gulp.md) instead of the [standard API](docs/api.md). If you want a runnable end-to-end example, have a look at [`example.ts`](example.ts) or run `npm run example`.
 
 
 ## Configuration basics
@@ -113,7 +124,7 @@ Of course you noticed the `config` variable passed to the constructor in the abo
 ```js
 {
   dest: <String>, // Main output directory
-  log: <String|Logger>, // Logging verbosity or custom logger
+  log: <Boolean|String|Logger>, // Logging verbosity or custom logger
   shape: <Object>, // SVG shape configuration
   svg: <Object>, // Common SVG options
   variables: <Object>, // Custom templating variables
@@ -132,18 +143,19 @@ Many configuration properties (all except `mode`) apply to all sprites created b
 // Common svg-sprite config options and their default values
 const config = {
   dest: '.', // Main output directory
-  log: null, // Logging verbosity (default: no logging)
+  log: false, // Disable logging (or use true / 'info' / 'verbose' / 'debug' / custom Logger)
   shape: { // SVG shape related options
     id: { // SVG shape ID related options
       separator: '--', // Separator for directory name traversal
       generator: function () { /*...*/ }, // SVG shape ID generator callback
-      pseudo: '~' // File name separator for shape states (e.g. ':hover')
+      pseudo: '~', // File name separator for shape states (e.g. ':hover')
+      whitespace: '_' // Whitespace replacement for shape IDs
     },
-    dimension: {// Dimension related options
+    dimension: { // Dimension related options
       maxWidth: 2000, // Max. shape width
       maxHeight: 2000, // Max. shape height
       precision: 2, // Floating point precision
-      attributes: false, // Width and height attributes on embedded shapes
+      attributes: false // Width and height attributes on embedded shapes
     },
     spacing: { // Spacing related options
       padding: 0, // Padding around all shapes
@@ -158,7 +170,7 @@ const config = {
     xmlDeclaration: true, // Add XML declaration to SVG sprite
     doctypeDeclaration: true, // Add DOCTYPE declaration to SVG sprite
     namespaceIDs: true, // Add namespace token to all IDs in SVG shapes
-    namespaceIDPrefix: '', // Add a prefix to the automatically generated namespaceIDs
+    namespaceIDPrefix: '', // Add a prefix to the automatically generated namespace IDs
     namespaceClassnames: true, // Add namespace token to all CSS class names in SVG shapes
     dimensionAttributes: true // Width and height attributes on the sprite
   },
@@ -320,7 +332,7 @@ cwd $   <dest>/                .           Main output directory
 
 By default, stylesheet resources are generated directly into the respective **mode's base directory**.
 
-> "Oh wait! Didn't you say that *svg-sprite* doesn't access the file system? So why do you need output directories at all?" — Well, good point. *svg-sprite* uses [vinyl](https://github.com/gulpjs/vinyl) file objects to pass along virtual resources and to specify where they **are intended to be located**. This is especially important for relative file paths (e.g. the path of an SVG sprite as used by a CSS stylesheet).
+> "Oh wait! Didn't you say that *svg-sprite* doesn't access the file system? So why do you need output directories at all?" — Well, good point. *svg-sprite* returns `SpriteFile` objects to describe where virtual resources **are intended to be located**. They expose `path`, `base`, `contents` and `relative`, which is especially important for relative file paths (e.g. the path of an SVG sprite as used by a CSS stylesheet). Vinyl files are still accepted as inputs because they satisfy the same minimal file shape.
 
 
 #### Pre-processor formats and the sprite location

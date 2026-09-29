@@ -7,7 +7,7 @@ This file is part of the documentation of *svg-sprite* — a free low-level Node
 
 ### Sprite & shape variables
 
-For each sprite generation process, a data object is constructed that is passed to the [Mustache](https://mustache.github.io/) templating engine for rendering the different resources. You can access these templating values via the `data` argument passed to the [compile() callback](api.md#svgspritercompile-config--callback-). Example:
+For each sprite generation process, a data object is constructed that is passed to the [Mustache](https://mustache.github.io/) templating engine for rendering the different resources. You can access these templating values via the `data` property returned by [`await spriter.compile()`](api.md#svgspritercompile-config-). Example:
 
 ```js
 {
@@ -132,7 +132,7 @@ For each sprite generation process, a data object is constructed that is passed 
 }
 ```
 
-**NOTE!**  `fileSize` property of each shape is null unless the `example` [config is passed](api.md#compilation-example)
+**NOTE!** `fileSize` is `null` unless the `example` [configuration is enabled](api.md#compilation-example).
 
 
 ### Builtin templating functions

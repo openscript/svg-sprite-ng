@@ -5,24 +5,43 @@ This file is part of the documentation of *svg-sprite* — a free low-level Node
 
 ## Grunt & Gulp wrappers
 
-This document aims to compare the use of *svg-sprite* via its [standard API](api.md) with the use of wrappers like the ones for Grunt and Gulp. The following examples are equivalent and have been simplified for the sake of clarity. Prerequisites like the necessary `require` calls or the construction of a [main configuration](configuration.md) object (`config`) have been omitted.
+This document compares the use of *svg-sprite* via its [standard API](api.md) with wrappers like the ones for Grunt and Gulp. The examples are equivalent and simplified for clarity.
 
 ## Standard API
 
 ```js
-const fs = require('fs');
-// Create spriter instance
-const spriter = new SVGSpriter(config);
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { SvgSpriter } from 'svg-sprite';
 
-// Add SVG source files — the manual way ...
-spriter.add('assets/svg-1.svg', null, fs.readFileSync('assets/svg-1.svg', 'utf-8'));
-spriter.add('assets/svg-2.svg', null, fs.readFileSync('assets/svg-2.svg', 'utf-8'));
-/* ... */
+async function writeFiles(files) {
+  if (!files) {
+    return;
+  }
 
-// Compile sprite
-spriter.compile((error, result) => {
-  /* ... Write `result` files to disk or do whatever with them ... */
-});
+  for (const file of Object.values(files)) {
+    if (!file) {
+      continue;
+    }
+
+    if (Array.isArray(file)) {
+      await writeFiles(file);
+    } else if (typeof file === 'object' && 'path' in file && 'contents' in file) {
+      await fs.mkdir(path.dirname(file.path), { recursive: true });
+      await fs.writeFile(file.path, file.contents);
+    } else if (typeof file === 'object') {
+      await writeFiles(file);
+    }
+  }
+}
+
+const spriter = new SvgSpriter(config);
+
+spriter.add('assets/svg-1.svg', null, await fs.readFile('assets/svg-1.svg', 'utf8'));
+spriter.add('assets/svg-2.svg', null, await fs.readFile('assets/svg-2.svg', 'utf8'));
+
+const { result } = await spriter.compile();
+await writeFiles(result);
 ```
 
 ## Grunt task (using [grunt-svg-sprite](https://github.com/svg-sprite/grunt-svg-sprite))
@@ -48,3 +67,5 @@ gulp.src('assets/*.svg')
   .pipe(svgSprite(config))
   .pipe(gulp.dest('out'));
 ```
+
+The core library no longer depends on `vinyl`, but it still accepts Vinyl-like inputs (`{ path, base, contents }`). Wrappers such as `gulp-svg-sprite` can therefore keep using Vinyl at their boundaries; if you call the standard API directly and need Vinyl outputs for downstream plugins, wrap the returned `SpriteFile` objects yourself.

@@ -23,16 +23,5 @@
     "typescript/no-misused-promises": "error",
     "typescript/await-thenable": "error"
   },
-  "ignorePatterns": [
-    "dist",
-    "coverage",
-    "tmp",
-    "lib",
-    "bin",
-    "test/**/*.js",
-    "example.js",
-    "jest.config.js",
-    "test/fixture",
-    "test/expected"
-  ]
+  "ignorePatterns": ["dist", "coverage", "tmp", "test/fixture", "test/expected"]
 }

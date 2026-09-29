@@ -23,7 +23,7 @@ path--to--circle:
 
 The keys need to match either
 
-* the **"local" file path part** of the SVG files you [register to the spriter](api.md#svgspriteraddfile--name-svg-) or
+* the **"local" file path part** of the SVG files you [register with the spriter](api.md#svgspriteraddfile--name-svg-) or
 * the final **shape IDs / CSS class names** as returned by the `id.generator` function.
 
 ### SVG results

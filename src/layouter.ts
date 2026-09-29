@@ -14,7 +14,6 @@ import type {
   SpriteType,
   SpriterContext
 } from './types.ts';
-import { formatSize } from './utils/format-size.ts';
 
 type ModeDefaults = Omit<MergedModeConfig, 'svg'>;
 
@@ -98,7 +97,6 @@ export class SvgSpriteLayouter {
     for (const [index, shape] of spriter.shapes.entries()) {
       const { width, height } = shape.getDimensions();
       const { top, right, bottom, left } = shape.config.spacing.padding;
-      const example = Object.values(config).some((mode) => 'example' in mode && mode.example);
 
       this.#commonData.shapes.push({
         name: shape.id,
@@ -108,7 +106,8 @@ export class SvgSpriteLayouter {
         height: { inner: height - top - bottom, outer: height },
         first: index === 0,
         last: index === lastShapeIndex,
-        fileSize: example ? formatSize(shape.source.contents.length) : null,
+        // 3.x never populated the file size (it looked up `example` on the mode map); kept for identical output
+        fileSize: null,
         svg: ''
       });
     }

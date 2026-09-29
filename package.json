@@ -80,6 +80,7 @@
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.12.0",
     "@types/pngjs": "^6.0.5",
+    "@types/yargs": "^17.0.35",
     "@vitest/coverage-v8": "^5.0.2",
     "less": "^4.4.1",
     "oxfmt": "^0.71.0",

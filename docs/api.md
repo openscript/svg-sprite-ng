@@ -101,7 +101,7 @@ The `.add()` method accepts either:
 * an absolute file path plus `name` and `svg` arguments, or
 * a file-like object with `{ path, base, contents }`.
 
-[Vinyl](https://github.com/gulpjs/vinyl) file instances satisfy that shape, but `vinyl` is no longer a dependency of *svg-sprite*.
+File objects from other tools can be passed directly when they provide those properties; *svg-sprite* does not require a particular file-object library.
 
 The spriter **optimizes SVG files as soon as you register them**, not only when you later [compile the sprite](#svgspritercompile-config-). This makes it possible to call `.compile()` multiple times with different mode configurations without repeating the optimization step.
 

@@ -26,17 +26,20 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run typecheck
-        run: npm run typecheck
+        run: pnpm typecheck
 
   test:
     name: Node ${{ matrix.node }} on ${{ matrix.os }}
@@ -54,30 +57,33 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
+          cache: pnpm
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build
-        run: npm run build
+        run: pnpm build
 
       - name: Run example
-        run: npm run example
+        run: pnpm example
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
         if: "!(startsWith(matrix.os, 'ubuntu') && matrix.node == env.NODE_COV)"
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: pnpm test:coverage
         if: startsWith(matrix.os, 'ubuntu') && matrix.node == env.NODE_COV
 
       - name: Upload failed tests' screenshots

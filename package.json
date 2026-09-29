@@ -1,5 +1,5 @@
 {
-  "name": "svg-sprite",
+  "name": "@openscript/svg-sprite-ng",
   "version": "4.0.0-rc.0",
   "description": "SVG sprites & stacks galore — A low-level Node.js module that takes a bunch of SVG files, optimizes them and bakes them into SVG sprites of several types along with suitable stylesheet resources (e.g. CSS, Sass, LESS, Stylus, etc.)",
   "keywords": [
@@ -23,15 +23,15 @@
     "svg",
     "vector"
   ],
-  "homepage": "https://github.com/svg-sprite/svg-sprite",
+  "homepage": "https://github.com/openscript/svg-sprite-ng",
   "bugs": {
-    "url": "https://github.com/svg-sprite/svg-sprite/issues"
+    "url": "https://github.com/openscript/svg-sprite-ng/issues"
   },
   "license": "MIT",
   "author": "Joschi Kuphal <joschi@kuphal.net> (https://jkphl.is)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/svg-sprite/svg-sprite.git"
+    "url": "git+https://github.com/openscript/svg-sprite-ng.git"
   },
   "bin": {
     "svg-sprite": "./dist/cli.js"
@@ -49,6 +49,9 @@
     },
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
@@ -59,7 +62,11 @@
     "example": "node --experimental-strip-types example.ts",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "release:major": "standard-version --release-as major && git push --follow-tags",
+    "release:minor": "standard-version --release-as minor && git push --follow-tags",
+    "release:patch": "standard-version --release-as patch && git push --follow-tags",
+    "release:create-github-release": "conventional-github-releaser -p angular"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
@@ -83,6 +90,7 @@
     "@types/stylus": "^0.48.43",
     "@types/yargs": "^17.0.35",
     "@vitest/coverage-v8": "^5.0.2",
+    "conventional-github-releaser": "^3.1.5",
     "less": "^4.4.1",
     "oxfmt": "^0.71.0",
     "oxlint": "^1.86.0",
@@ -91,6 +99,7 @@
     "playwright-chromium": "^1.50.1",
     "pngjs": "^7.0.0",
     "sass": "^1.91.0",
+    "standard-version": "^9.5.0",
     "stylus": "^0.64.0",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2",
@@ -98,5 +107,6 @@
   },
   "engines": {
     "node": ">=22.12"
-  }
+  },
+  "packageManager": "pnpm@10.34.6"
 }

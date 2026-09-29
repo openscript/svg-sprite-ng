@@ -11,7 +11,7 @@ on:
 
 env:
   FORCE_COLOR: 2
-  NODE: 20 # The Node.js version to run lint on
+  NODE: 24 # The Node.js version to run lint on
 
 permissions:
   contents: read
@@ -35,5 +35,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Run lint
+      - name: Run Oxlint
         run: npm run lint
+
+      - name: Check formatting with Oxfmt
+        run: npm run format:check

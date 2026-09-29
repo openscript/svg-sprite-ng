@@ -1,15 +1,25 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
       interval: monthly
     groups:
       github-actions:
         patterns:
-          - "*"
+          - '*'
   - package-ecosystem: npm
-    directory: "/"
+    directory: '/'
     schedule:
       interval: monthly
     versioning-strategy: increase
+    groups:
+      oxc-toolchain:
+        patterns:
+          - 'oxlint*'
+          - 'oxfmt'
+          - 'tsdown'
+      vitest:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'

@@ -1,4 +1,14 @@
 {
-	"name": "svg-sprite-ng",
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:5-24-trixie"
+  "name": "svg-sprite-ng",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:5-24-trixie",
+  "postCreateCommand": "npm ci && npx playwright install --with-deps chromium",
+  "customizations": {
+    "vscode": {
+      "extensions": ["oxc.oxc-vscode", "vitest.explorer", "editorconfig.editorconfig"],
+      "settings": {
+        "editor.defaultFormatter": "oxc.oxc-vscode",
+        "editor.formatOnSave": true
+      }
+    }
+  }
 }

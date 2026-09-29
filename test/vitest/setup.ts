@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { afterAll, beforeAll, expect } from 'vitest';
+import { ConsoleLogger } from '../../src/logger.ts';
 import { closeBrowser, launchBrowser } from '../helpers/capture-browser.ts';
 import { compareHtml2Png } from '../helpers/compare-html-2-png.ts';
 import { compareSvg2Png } from '../helpers/compare-svg-2-png.ts';
@@ -39,8 +40,18 @@ expect.extend({
           ? `Expected: not ${this.utils.printExpected(expected)}\nReceived: ${this.utils.printReceived(received)}`
           : `${this.utils.printReceived('Difference:')} ${expected} -> ${received}\nExpected: ${this.utils.printExpected('no difference')}\nReceived: ${this.utils.printReceived(matched)} mismatches`
     };
+  },
+  toBeDefaultLogger(received: unknown) {
+    const pass = received instanceof ConsoleLogger;
+
+    return {
+      pass,
+      message: () =>
+        pass
+          ? 'Expected: not the default console logger'
+          : `Expected: the default console logger\nReceived: ${this.utils.printReceived(received)}`
+    };
   }
-  // toBeDefaultLogger is registered in Phase 4 once the Logger interface exists in src/.
 });
 
 beforeAll(launchBrowser);

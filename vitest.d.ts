@@ -3,6 +3,7 @@ import 'vitest';
 interface SvgSpriteMatchers<R = unknown> {
   toBeVisuallyEqualTo: (expectedPNGPath: string) => Promise<R>;
   toBeVisuallyCorrectAsHTMLTo: (expectedPNGPath: string) => Promise<R>;
+  toBeDefaultLogger: () => R;
 }
 
 declare module 'vitest' {

@@ -73,6 +73,7 @@ async function resolveFiles(patterns: readonly string[]): Promise<string[]> {
 async function main(args: readonly string[]): Promise<void> {
   const options = await loadOptions();
   let parser: Argv = yargs([...args])
+    .scriptName('svg-sprite')
     .usage(
       'Create one or multiple sprites of the given SVG files, optionally along with some stylesheet resources.\nUsage: $0 [options] files'
     )

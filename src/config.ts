@@ -231,7 +231,7 @@ function resolveShape(config: SpriterConfig, dest: string, log: Logger): Resolve
   const separator = shape.id?.separator ?? '--';
   const generatorOption = shape.id?.generator;
   const generator: ShapeIdGenerator = isFunction(generatorOption)
-    ? (generatorOption)
+    ? generatorOption
     : createIdGenerator(
         isString(generatorOption)
           ? generatorOption + (generatorOption.includes('%s') ? '' : '%s')

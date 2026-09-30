@@ -652,11 +652,11 @@ export class SvgShape {
 
     return selectors
       ? this.#replaceIdAndClassnameReferencesInCssSelectors(
-        result,
-        cssom.parse(result).cssRules,
-        substIds,
-        substClassnames
-      )
+          result,
+          cssom.parse(result).cssRules,
+          substIds,
+          substClassnames
+        )
       : result;
   }
 
@@ -702,9 +702,7 @@ export class SvgShape {
 
       // Regular selector
       const origSelText = selText;
-      let sel: ParsedSelector | undefined = new CssSelectorParser().parse(
-        selText
-      );
+      let sel: ParsedSelector | undefined = new CssSelectorParser().parse(selText);
       const ids: string[] = [];
       const classnames = new Set<string>();
 

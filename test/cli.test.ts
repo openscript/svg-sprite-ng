@@ -83,11 +83,11 @@ describe('command line interface', () => {
     const renderers =
       mode === 'css' || mode === 'view'
         ? [
-          `--${mode}-render-css`,
-          `--${mode}-render-scss`,
-          `--${mode}-render-less`,
-          `--${mode}-render-styl`
-        ]
+            `--${mode}-render-css`,
+            `--${mode}-render-scss`,
+            `--${mode}-render-less`,
+            `--${mode}-render-styl`
+          ]
         : [];
 
     await svgSprite(

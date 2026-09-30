@@ -1,6 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [4.0.0](https://github.com/openscript/svg-sprite-ng/compare/v3.9.2...v4.0.0) (2026-09-30)
+
+
+### Features
+
+* enhance CLI tests for glob resolution and output exclusion ([a928b35](https://github.com/openscript/svg-sprite-ng/commit/a928b35b703477ee4397dd5806cd467c69be4a51))
 
 ### [3.9.2](https://github.com/openscript/svg-sprite-ng/compare/v3.9.1...v3.9.2) (2026-09-30)
 

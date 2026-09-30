@@ -1,6 +1,6 @@
 {
   "name": "@openscript/svg-sprite-ng",
-  "version": "3.9.2",
+  "version": "4.0.0",
   "description": "SVG sprites & stacks galore — A low-level Node.js module that takes a bunch of SVG files, optimizes them and bakes them into SVG sprites of several types along with suitable stylesheet resources (e.g. CSS, Sass, LESS, Stylus, etc.)",
   "keywords": [
     "css",

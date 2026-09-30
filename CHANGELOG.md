@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.9.2](https://github.com/openscript/svg-sprite-ng/compare/v3.9.1...v3.9.2) (2026-09-30)
+
 ### 3.9.1 (2026-09-30)
 
 

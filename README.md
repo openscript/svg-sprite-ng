@@ -397,7 +397,10 @@ Please refer to the [GitHub releases](https://github.com/svg-sprite/svg-sprite/r
 
 ## Legal
 
-Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl). *svg-sprite* is licensed under the terms of the [MIT license](LICENSE). The contained example SVG icons are part of the [Tango Icon Library](http://tango.freedesktop.org/Tango_Icon_Library) and belong to the Public Domain.
+- Copyright © 2018 Robin Bühler
+- Copyright © 2018 Joschi Kuphal <joschi@kuphal.net> / [@jkphl](https://twitter.com/jkphl)
+
+*svg-sprite* is licensed under the terms of the [MIT license](LICENSE). The contained example SVG icons are part of the [Tango Icon Library](http://tango.freedesktop.org/Tango_Icon_Library) and belong to the Public Domain.
 
 
 [npm-url]: https://www.npmjs.com/package/svg-sprite

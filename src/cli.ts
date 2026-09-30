@@ -64,7 +64,10 @@ async function resolveFiles(patterns: readonly string[]): Promise<string[]> {
   const files: string[] = [];
 
   for (const pattern of patterns) {
-    files.push(...(await glob(pattern)));
+    // Glob patterns require forward slashes; backslashes are escape characters
+    const normalized = path.sep === '\\' ? pattern.replaceAll('\\', '/') : pattern;
+
+    files.push(...(await glob(normalized)));
   }
 
   return files;

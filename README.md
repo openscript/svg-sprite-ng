@@ -1,6 +1,8 @@
-# svg-sprite
+# svg-sprite-ng
 
-[![npm version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![npm downloads][npm-downloads]][npm-url]
+[![npm version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url] [![npm downloads][npm-downloads]][npm-url]
+
+> **Note:** This project is a fork of [svg-sprite](https://github.com/svg-sprite/svg-sprite), rewritten in TypeScript.
 
 svg-sprite is a low-level [Node.js](https://nodejs.org/) module that **takes a bunch of [SVG](https://www.w3.org/TR/SVG/) files**, optimizes them and bakes them into **SVG sprites** of several types:
 
@@ -78,7 +80,7 @@ The procedure is the very same for all supported sprite types («modes»).
 ```js
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { SvgSpriter } from 'svg-sprite';
+import { SvgSpriter } from '@openscript/svg-sprite-ng';
 
 async function writeFiles(files) {
   if (!files) {
@@ -392,7 +394,7 @@ Please refer to the [CLI guide](docs/command-line.md) for further details.
 
 ## Changelog
 
-Please refer to the [GitHub releases](https://github.com/svg-sprite/svg-sprite/releases) for a complete release history.
+Please refer to the [GitHub releases](https://github.com/openscript/svg-sprite-ng/releases) for a complete release history.
 
 
 ## Legal
@@ -403,12 +405,9 @@ Please refer to the [GitHub releases](https://github.com/svg-sprite/svg-sprite/r
 *svg-sprite* is licensed under the terms of the [MIT license](LICENSE). The contained example SVG icons are part of the [Tango Icon Library](http://tango.freedesktop.org/Tango_Icon_Library) and belong to the Public Domain.
 
 
-[npm-url]: https://www.npmjs.com/package/svg-sprite
-[npm-image]: https://img.shields.io/npm/v/svg-sprite?logo=npm&logoColor=fff
-[npm-downloads]: https://img.shields.io/npm/dm/svg-sprite
+[npm-url]: https://www.npmjs.com/package/@openscript/svg-sprite-ng
+[npm-image]: https://img.shields.io/npm/v/@openscript/svg-sprite-ng?logo=npm&logoColor=fff
+[npm-downloads]: https://img.shields.io/npm/dm/@openscript/svg-sprite-ng
 
-[ci-url]: https://github.com/svg-sprite/svg-sprite/actions/workflows/test.yml?query=branch%3Amain
-[ci-image]: https://img.shields.io/github/actions/workflow/status/svg-sprite/svg-sprite/test.yml?branch=main&label=CI&logo=github
-
-[coveralls-url]: https://coveralls.io/github/svg-sprite/svg-sprite?branch=main
-[coveralls-image]: https://img.shields.io/coveralls/github/svg-sprite/svg-sprite/main?logo=coveralls
+[ci-url]: https://github.com/openscript/svg-sprite-ng/actions/workflows/test.yml?query=branch%3Amain
+[ci-image]: https://img.shields.io/github/actions/workflow/status/openscript/svg-sprite-ng/test.yml?branch=main&label=CI&logo=github

@@ -1,3 +1,4 @@
 allowBuilds:
   '@parcel/watcher': true
   playwright-chromium: true
+minimumReleaseAge: 1440

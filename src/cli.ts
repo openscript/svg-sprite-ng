@@ -60,14 +60,23 @@ function addOption(parser: Argv, option: CliOption): Argv {
   return result;
 }
 
-async function resolveFiles(patterns: readonly string[]): Promise<string[]> {
-  const files: string[] = [];
+async function resolveFiles(
+  patterns: readonly string[]
+): Promise<{ match: string; base: string | undefined }[]> {
+  const files: { match: string; base: string | undefined }[] = [];
 
   for (const pattern of patterns) {
     // Glob patterns require forward slashes; backslashes are escape characters
     const normalized = path.sep === '\\' ? pattern.replaceAll('\\', '/') : pattern;
+    const marker = normalized.lastIndexOf('/./');
+    const base =
+      marker === -1
+        ? normalized.startsWith('./')
+          ? path.resolve('.')
+          : undefined
+        : path.resolve(normalized.slice(0, marker));
 
-    files.push(...(await glob(normalized)));
+    files.push(...(await glob(normalized)).map((match) => ({ match, base })));
   }
 
   return files;
@@ -103,19 +112,35 @@ async function main(args: readonly string[]): Promise<void> {
   const config = await buildConfig(argv, options);
   const spriter = new SvgSpriter(config);
   const patterns = (argv['_'] as (string | number)[]).map(String);
+  const dest = spriter.config.dest;
+  const excludedRoots = [
+    ...(dest === process.cwd() ? [] : [dest]),
+    ...Object.values(spriter.config.mode).map((mode) => path.resolve(dest, mode.dest ?? mode.mode))
+  ];
 
-  for (const match of await resolveFiles(patterns)) {
+  if (spriter.config.shape.dest) {
+    excludedRoots.push(spriter.config.shape.dest);
+  }
+
+  for (const { match, base } of await resolveFiles(patterns)) {
     let file = path.resolve(match);
-    let basename = match;
+
+    if (
+      excludedRoots.some(
+        (root) => root !== process.cwd() && (file === root || file.startsWith(`${root}${path.sep}`))
+      )
+    ) {
+      continue;
+    }
+
+    let basename = path.basename(file);
     const stat = await lstat(file);
 
     if (stat.isSymbolicLink()) {
       file = await readlink(file);
       basename = path.basename(file);
-    } else {
-      const basepos = basename.lastIndexOf('./');
-
-      basename = basepos === -1 ? path.basename(file) : basename.slice(basepos + 2);
+    } else if (base !== undefined) {
+      basename = path.relative(base, file);
     }
 
     spriter.add(file, basename, await readFile(file));

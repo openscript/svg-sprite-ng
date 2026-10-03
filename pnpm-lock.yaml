@@ -173,8 +173,8 @@ importers:
         specifier: ^0.9.12
         version: 0.9.12
       css-selector-parser:
-        specifier: ^1.4.1
-        version: 1.4.1
+        specifier: ^3.0.0
+        version: 3.3.0
       csso:
         specifier: ^5.0.5
         version: 5.0.5
@@ -1497,8 +1497,8 @@ packages:
   css-select@6.0.0:
     resolution: {integrity: sha512-rZZVSLle8v0+EY8QAkDWrKhpgt6SA5OtHsgBnsj6ZaLb5dmDVOWUDtQitd9ydxxvEjhewNudS6eTVU7uOyzvXw==}
 
-  css-selector-parser@1.4.1:
-    resolution: {integrity: sha512-HYPSb7y/Z7BNDCOrakL4raGO2zltZkbeXyAd6Tg9obzix6QhzxCotdBl6VT0Dv4vZfJGVz3WL/xaEI9Ly3ul0g==}
+  css-selector-parser@3.3.0:
+    resolution: {integrity: sha512-Y2asgMGFqJKF4fq4xHDSlFYIkeVfRsm69lQC1q9kbEsH5XtnINTMrweLkjYMeaUgiXBy/uvKeO/a1JHTNnmB2g==}
 
   css-tree@2.2.1:
     resolution: {integrity: sha512-OA0mILzGc1kCOCSJerOeqDxDQ4HOh+G8NbOJFOTgOCzpw7fCBubk0fEyxp8AgOL/jvLgYA/uV0cMbe43ElF1JA==}
@@ -3961,7 +3961,7 @@ snapshots:
       domutils: 3.2.2
       nth-check: 2.1.1
 
-  css-selector-parser@1.4.1: {}
+  css-selector-parser@3.3.0: {}
 
   css-tree@2.2.1:
     dependencies:

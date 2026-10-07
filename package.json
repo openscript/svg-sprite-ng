@@ -98,7 +98,7 @@
     "oxfmt": "^0.71.0",
     "oxlint": "^1.86.0",
     "oxlint-tsgolint": "^7.0.2003",
-    "pixelmatch": "^7.2.0",
+    "pixelmatch": "^8.0.0",
     "playwright-chromium": "^1.50.1",
     "pngjs": "^7.0.0",
     "sass": "^1.91.0",
